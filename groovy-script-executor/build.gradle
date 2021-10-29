@@ -21,6 +21,13 @@ targetCompatibility = JavaVersion.VERSION_17
 
 [compileJava, compileTestGroovy, compileTestJava]*.options*.encoding = "UTF-8"
 [compileJava, compileTestGroovy, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
+sourceSets {
+    main {
+        compileGroovy {
+            exclude 'sample/*.groovy'
+        }
+    }
+}
 bootJar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

@@ -1,0 +1,76 @@
+# docker-compose build --no-cache
+# docker-compose up -d
+# docker-compose down
+version: '3'
+
+services:
+  #############################################################################
+  # PostgreSQL
+  #
+  postgresql:
+    image: postgres:${POSTGRESQL_VERSION}-alpine
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - TZ=Asia/Tokyo
+      - LANG=ja_JP.UTF-8
+      - POSTGRES_PASSWORD=xxxxxxxx
+    volumes:
+      - ./docker/flyway/db/init/create_database_postgresql.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+  #############################################################################
+  # pgAdmin 4
+  #
+  # URL
+  # http://localhost:12000/
+  pgadmin4:
+    build:
+      context: ./docker/pgadmin4
+      args:
+        - PGADMIN4_VERSION=${PGADMIN4_VERSION}
+    image: dpage/pgadmin4:${PGADMIN4_VERSION}-custom
+    container_name: pgadmin4
+    ports:
+      - "12000:80"
+    environment:
+      # TZ=Asia/Tokyo を設定してみたが日本時間に変わらなかったのでコメントアウトしておく
+      # - TZ=Asia/Tokyo
+      # PGADMIN_DEFAULT_EMAIL には接続する PostgreSQL の ユーザ名を設定する（サーバを追加する時楽なため）
+      - PGADMIN_DEFAULT_EMAIL=postgres@example.com
+      - PGADMIN_DEFAULT_PASSWORD=xxxxxxxx
+      # PGADMIN_CONFIG_CONSOLE_LOG_LEVEL は debug 用
+      # 設定値は https://www.pgadmin.org/docs/pgadmin4/development/config_py.html の CONSOLE_LOG_LEVEL 参照
+      - PGADMIN_CONFIG_CONSOLE_LOG_LEVEL=10
+      - PGADMIN_CONFIG_SESSION_DB_PATH='/var/lib/pgadmin_session'
+    volumes:
+      - ./docker/pgadmin4/data:/var/lib/pgadmin
+
+  #############################################################################
+  # MySQL
+  #
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      - TZ=Asia/Tokyo
+      - MYSQL_ROOT_PASSWORD=xxxxxxxx
+    volumes:
+      - ./docker/flyway/db/init/create_database_mysql.sql:/docker-entrypoint-initdb.d/create_database.sql
+
+  #############################################################################
+  # Adminer
+  #
+  # URL
+  # http://localhost:13000/
+  adminer:
+    image: adminer:${ADMINER_VERSION}
+    container_name: adminer
+    ports:
+      - 13000:8080
+    environment:
+      - TZ=Asia/Tokyo
+      - ADMINER_DEFAULT_SERVER=mysql

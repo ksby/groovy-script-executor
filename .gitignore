@@ -36,3 +36,6 @@ build
 out/
 **/src/main/generated
 **/src/test/generated_tests
+
+# Docker
+docker/pgadmin4/data

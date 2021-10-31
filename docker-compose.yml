@@ -18,6 +18,7 @@ services:
       - POSTGRES_PASSWORD=xxxxxxxx
     volumes:
       - ./docker/flyway/db/init/create_database_postgresql.sql:/docker-entrypoint-initdb.d/create_database.sql
+      - ./docker/flyway/db/migration/postgresql_sampledb/jm2020.csv:/docker-entrypoint-initdb.d/jm2020.csv
 
   #############################################################################
   # pgAdmin 4
@@ -74,3 +75,27 @@ services:
     environment:
       - TZ=Asia/Tokyo
       - ADMINER_DEFAULT_SERVER=mysql
+
+  #############################################################################
+  # Flyway for postgresql@sampledb
+  #
+  flyway_sampledb:
+    image: flyway/flyway:${FLYWAY_VERSION}-alpine
+    container_name: flyway_sampledb
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      - ./docker/flyway/db/migration/postgresql_sampledb:/flyway/sql
+    command: -url="${SAMPLEDB_URL}" -user=${SAMPLEDB_USER} -password=${SAMPLEDB_PASSWORD} -connectRetries=60 migrate
+    depends_on:
+      - postgresql
+    # 下の３行は debug 用
+    # うまく動かない時はコメントアウトを解除した後、
+    # docker exec -it flyway_sampledb /bin/sh
+    # で接続してから
+    # flyway <command に記述した文字列>
+    # を実行してみる
+    #
+    # entrypoint: /bin/sh
+    # stdin_open: true
+    # tty: true

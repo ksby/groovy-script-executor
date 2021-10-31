@@ -99,3 +99,27 @@ services:
     # entrypoint: /bin/sh
     # stdin_open: true
     # tty: true
+
+  #############################################################################
+  # Flyway for mysql@testdb
+  #
+  flyway_testdb:
+    image: flyway/flyway:${FLYWAY_VERSION}-alpine
+    container_name: flyway_testdb
+    environment:
+      - TZ=Asia/Tokyo
+    volumes:
+      - ./docker/flyway/db/migration/mysql_testdb:/flyway/sql
+    command: -url="${TESTDB_URL}" -user=${TESTDB_USER} -password=${TESTDB_PASSWORD} -connectRetries=60 migrate
+    depends_on:
+      - mysql
+    # 下の３行は debug 用
+    # うまく動かない時はコメントアウトを解除した後、
+    # docker exec -it flyway_testdb /bin/sh
+    # で接続してから
+    # flyway <command に記述した文字列>
+    # を実行してみる
+    #
+    # entrypoint: /bin/sh
+    # stdin_open: true
+    # tty: true

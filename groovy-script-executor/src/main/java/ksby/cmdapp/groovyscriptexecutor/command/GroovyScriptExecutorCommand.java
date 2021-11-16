@@ -2,6 +2,7 @@ package ksby.cmdapp.groovyscriptexecutor.command;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.util.concurrent.Callable;
 
 import static picocli.CommandLine.*;
 
+@Slf4j
 @Component
 @Command(name = "groovy-script-executor", mixinStandardHelpOptions = true,
         versionProvider = GroovyScriptExecutorCommand.class,
@@ -32,9 +34,14 @@ public class GroovyScriptExecutorCommand
 
     @Override
     public Integer call() throws IOException {
-        Binding binding = new Binding();
-        GroovyShell shell = new GroovyShell(binding);
-        shell.run(groovyScript, args);
+        try {
+            Binding binding = new Binding();
+            GroovyShell shell = new GroovyShell(binding);
+            shell.run(groovyScript, args);
+        } catch (Exception e) {
+            log.error("Groovyスクリプトでエラーが発生しました。", e);
+        }
+
         return ExitCode.OK;
     }
 

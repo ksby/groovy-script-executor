@@ -4,6 +4,19 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <property name="LOGGING_APPENDER" value="${logging.appender:-FILE}"/>
 
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <maxLength>2048</maxLength>
+                <shortenedClassNameLength>20</shortenedClassNameLength>
+                <rootCauseFirst>true</rootCauseFirst>
+                <inlineHash>true</inlineHash>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
     <if condition='isDefined("LOG_FILE")'>
         <then>
             <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -27,7 +40,8 @@
         </then>
         <else>
             <root>
-                <appender-ref ref="CONSOLE"/>
+                <!--<appender-ref ref="CONSOLE"/>-->
+                <appender-ref ref="JSON"/>
             </root>
         </else>
     </if>

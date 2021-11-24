@@ -3,6 +3,7 @@ package ksby.cmdapp.groovyscriptexecutor.command;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.stereotype.Component;
@@ -32,12 +33,15 @@ public class GroovyScriptExecutorCommand
             description = "Groovyスクリプトに渡す引数を指定する")
     private String[] args;
 
+    @Unmatched
+    private String[] unmatched;
+
     @Override
     public Integer call() throws IOException {
         try {
             Binding binding = new Binding();
             GroovyShell shell = new GroovyShell(binding);
-            shell.run(groovyScript, args);
+            shell.run(groovyScript, ArrayUtils.addAll(args, unmatched));
         } catch (Exception e) {
             log.error("Groovyスクリプトでエラーが発生しました。", e);
         }

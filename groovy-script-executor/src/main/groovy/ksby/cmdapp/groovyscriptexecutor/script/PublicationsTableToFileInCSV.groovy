@@ -1,4 +1,4 @@
-package sample
+package ksby.cmdapp.groovyscriptexecutor.script
 
 import groovy.sql.Sql
 

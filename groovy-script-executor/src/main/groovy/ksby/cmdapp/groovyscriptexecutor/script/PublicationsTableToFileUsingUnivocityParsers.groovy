@@ -1,4 +1,4 @@
-package sample
+package ksby.cmdapp.groovyscriptexecutor.script
 
 import com.univocity.parsers.annotations.Parsed
 import com.univocity.parsers.common.processor.BeanWriterProcessor

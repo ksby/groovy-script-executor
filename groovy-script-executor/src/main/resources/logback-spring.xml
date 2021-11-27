@@ -40,8 +40,8 @@
         </then>
         <else>
             <root>
-                <!--<appender-ref ref="CONSOLE"/>-->
-                <appender-ref ref="JSON"/>
+                <appender-ref ref="CONSOLE"/>
+                <!--<appender-ref ref="JSON"/>-->
             </root>
         </else>
     </if>

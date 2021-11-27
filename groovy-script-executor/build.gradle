@@ -24,7 +24,7 @@ targetCompatibility = JavaVersion.VERSION_17
 sourceSets {
     main {
         compileGroovy {
-            exclude 'sample/*.groovy'
+            exclude "ksby/cmdapp/groovyscriptexecutor/script/*.groovy"
         }
     }
 }

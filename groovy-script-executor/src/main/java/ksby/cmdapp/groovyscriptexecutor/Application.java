@@ -1,10 +1,12 @@
 package ksby.cmdapp.groovyscriptexecutor;
 
 import ksby.cmdapp.groovyscriptexecutor.command.GroovyScriptExecutorCommand;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import picocli.CommandLine;
 
 import static picocli.CommandLine.IFactory;
@@ -25,7 +27,11 @@ public class Application implements CommandLineRunner, ExitCodeGenerator {
     }
 
     public static void main(String[] args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(Application.class, args)));
+        String springMainWebApplicationType = System.getProperty("spring.main.web-application-type");
+        ApplicationContext context = SpringApplication.run(Application.class, args);
+        if (StringUtils.equals(springMainWebApplicationType, "none")) {
+            System.exit(SpringApplication.exit(context));
+        }
     }
 
     @Override

@@ -12,7 +12,7 @@ buildscript {
 plugins {
     id 'java'
     id 'groovy'
-    id 'org.springframework.boot' version '2.5.6'
+    id 'org.springframework.boot' version '2.6.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
@@ -20,7 +20,10 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 [compileJava, compileTestGroovy, compileTestJava]*.options*.encoding = "UTF-8"
-[compileJava, compileTestGroovy, compileTestJava]*.options*.compilerArgs = ["-Xlint:all,-options,-processing,-path"]
+[compileJava, compileTestGroovy, compileTestJava]*.options*.compilerArgs = [
+        "-Xlint:all,-options,-processing,-path",
+        "-Aproject=${project.group}/${project.name}"
+]
 sourceSets {
     main {
         compileGroovy {
@@ -64,7 +67,7 @@ dependencyManagement {
             // Spring Boot の BOM に定義されているバージョンから変更する場合には、ここに以下のように記述する
             // bomProperty "thymeleaf.version", "3.0.9.RELEASE"
         }
-        mavenBom("org.junit:junit-bom:5.8.1")
+        mavenBom("org.junit:junit-bom:5.8.2")
     }
 }
 
@@ -72,7 +75,7 @@ dependencies {
     def postgresqlJdbcDriver = "org.postgresql:postgresql:42.3.1"
     def mariadbJdbcDriver = "org.mariadb.jdbc:mariadb-java-client:2.7.4"
     def groovyVersion = "3.0.9"
-    def picocliVersion = "4.6.1"
+    def picocliVersion = "4.6.2"
     def lombokVersion = "1.18.22"
     def spockVersion = "2.0-groovy-3.0"
 
@@ -88,7 +91,7 @@ dependencies {
     runtimeOnly("${postgresqlJdbcDriver}")
     runtimeOnly("${mariadbJdbcDriver}")
     implementation("com.univocity:univocity-parsers:2.9.1")
-    implementation("net.logstash.logback:logstash-logback-encoder:6.6")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.0.1")
     testImplementation("org.assertj:assertj-core:3.21.0")
 
     // for Groovy
@@ -96,6 +99,7 @@ dependencies {
 
     // for Picocli
     implementation("info.picocli:picocli-spring-boot-starter:${picocliVersion}")
+    annotationProcessor("info.picocli:picocli-codegen:${picocliVersion}")
 
     // for lombok
     // testAnnotationProcessor、testCompileOnly を併記しなくてよいよう configurations で設定している
